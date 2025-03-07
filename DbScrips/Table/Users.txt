@@ -1,0 +1,8 @@
+CREATE TABLE Users (
+    UserID INT IDENTITY PRIMARY KEY,
+    Email NVARCHAR(255) UNIQUE NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    ProfileImage NVARCHAR(255),
+    Bio NVARCHAR(MAX),
+    Role NVARCHAR(20) CHECK (Role IN ('Learner', 'Instructor', 'Admin'))
+);

@@ -1,0 +1,12 @@
+CREATE TABLE Courses (
+    CourseID INT IDENTITY PRIMARY KEY,
+    Title NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(MAX),
+    CategoryID INT FOREIGN KEY REFERENCES Categories(CategoryID),
+    InstructorID INT FOREIGN KEY REFERENCES Users(UserID),
+    Level NVARCHAR(20) CHECK (Level IN ('Beginner', 'Intermediate', 'Advanced')),
+    Price DECIMAL(10,2),
+    Discount DECIMAL(10,2) NULL,
+    TotalDuration INT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);

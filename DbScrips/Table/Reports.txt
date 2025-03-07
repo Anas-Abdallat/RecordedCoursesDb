@@ -1,0 +1,6 @@
+CREATE TABLE Reports (
+    ReportID INT IDENTITY PRIMARY KEY,
+    GeneratedAt DATETIME DEFAULT GETDATE(),
+    ReportType NVARCHAR(50),
+    DataJSON NVARCHAR(MAX)
+);

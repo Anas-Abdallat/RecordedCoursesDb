@@ -1,0 +1,90 @@
+CREATE PROCEDURE ManageDiscounts
+    @CourseID INT,            
+    @Discount DECIMAL(10, 2),  
+    @StartDate DATETIME,      
+    @EndDate DATETIME,       
+    @ForceUpdate BIT = 0        
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+
+    IF NOT EXISTS (SELECT 1 FROM Courses WHERE CourseID = @CourseID)
+    BEGIN
+        PRINT 'Error: Course does not exist.';
+        RETURN;
+    END
+
+
+    IF @StartDate >= @EndDate
+    BEGIN
+        PRINT 'Error: Start date cannot be later than or equal to end date.';
+        RETURN;
+    END
+
+  
+    IF EXISTS (SELECT 1 FROM Courses WHERE CourseID = @CourseID AND Discount IS NOT NULL)
+    BEGIN
+   
+        IF @ForceUpdate = 1
+        BEGIN
+            UPDATE Courses
+            SET Discount = @Discount,
+                DiscountStartDate = @StartDate,
+                DiscountEndDate = @EndDate
+            WHERE CourseID = @CourseID;
+
+            PRINT 'Discount updated successfully.';
+        END
+        ELSE
+        BEGIN
+            PRINT 'Error: Discount already exists. Set ForceUpdate = 1 to override.';
+        END
+    END
+    ELSE
+    BEGIN
+
+        UPDATE Courses
+        SET Discount = @Discount,
+            DiscountStartDate = @StartDate,
+            DiscountEndDate = @EndDate
+        WHERE CourseID = @CourseID;
+
+        PRINT 'Discount applied successfully.';
+    END
+END;
+
+_______________________
+
+to create new discount :
+
+EXEC ManageDiscounts
+    @CourseID = 1,
+    @Discount = 10.00,
+    @StartDate = '2025-04-01',
+    @EndDate = '2025-04-30';
+_____________________
+
+To Update dis :
+
+EXEC ManageDiscounts
+    @CourseID = 1,
+    @Discount = 15.00,  
+    @StartDate = '2025-05-01',
+    @EndDate = '2025-05-31',
+    @ForceUpdate = 1;  
+
+To success senrio:
+
+i am add two cloums to courses table :
+
+ALTER TABLE Courses
+ADD DiscountStartDate DATETIME NULL,
+DiscountEndDate DATETIME NULL;
+
+And i use quirey to complete changes i will use this  :
+
+SELECT COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Courses';
+

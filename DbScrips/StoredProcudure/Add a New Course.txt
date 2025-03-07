@@ -1,0 +1,85 @@
+CREATE PROCEDURE AddNewCourse
+    @InstructorID INT,
+    @Title NVARCHAR(255),
+    @Description NVARCHAR(MAX),
+    @CategoryID INT,
+    @Level NVARCHAR(20),
+    @Price DECIMAL(10, 2),
+    @Discount DECIMAL(10, 2) = NULL,
+    @Lessons XML
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+
+    IF NOT EXISTS (SELECT 1 FROM Users WHERE UserID = @InstructorID AND Role = 'Instructor')
+    BEGIN
+        PRINT 'Error: Instructor does not exist or is not authorized.';
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Categories WHERE CategoryID = @CategoryID)
+    BEGIN
+        PRINT 'Error: Category does not exist.';
+        RETURN;
+    END
+
+    DECLARE @CourseID INT;
+    INSERT INTO Courses (Title, Description, CategoryID, InstructorID, Level, Price, Discount, CreatedAt)
+    VALUES (@Title, @Description, @CategoryID, @InstructorID, @Level, @Price, @Discount, GETDATE());
+
+    SET @CourseID = SCOPE_IDENTITY();
+
+    DECLARE @LessonTitle NVARCHAR(255);
+    DECLARE @LessonVideoURL NVARCHAR(255);
+    DECLARE @LessonDuration INT;
+    
+    DECLARE LessonCursor CURSOR FOR
+    SELECT
+        Lesson.value('Title[1]', 'NVARCHAR(255)'),
+        Lesson.value('VideoURL[1]', 'NVARCHAR(255)'),
+        Lesson.value('Duration[1]', 'INT')
+    FROM @Lessons.nodes('/Lessons/Lesson') AS X(Lesson);
+    
+    OPEN LessonCursor;
+    FETCH NEXT FROM LessonCursor INTO @LessonTitle, @LessonVideoURL, @LessonDuration;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        INSERT INTO Lessons (CourseID, Title, VideoURL, Duration)
+        VALUES (@CourseID, @LessonTitle, @LessonVideoURL, @LessonDuration);
+        
+        FETCH NEXT FROM LessonCursor INTO @LessonTitle, @LessonVideoURL, @LessonDuration;
+    END;
+
+    CLOSE LessonCursor;
+    DEALLOCATE LessonCursor;
+
+    PRINT 'Success: Course and lessons added successfully.';
+END;
+_______________________________________________
+to use :
+
+DECLARE @Lessons XML = 
+'<Lessons>
+    <Lesson>
+        <Title>Introduction to Python</Title>
+        <VideoURL>https://example.com/video1</VideoURL>
+        <Duration>30</Duration>
+    </Lesson>
+    <Lesson>
+        <Title>Python Basics</Title>
+        <VideoURL>https://example.com/video2</VideoURL>
+        <Duration>45</Duration>
+    </Lesson>
+</Lessons>';
+
+EXEC AddNewCourse 
+    @InstructorID = 101, 
+    @Title = 'Learn Python Programming', 
+    @Description = 'An introductory course on Python programming.', 
+    @CategoryID = 1, 
+    @Level = 'Beginner', 
+    @Price = 49.99, 
+    @Discount = 5.00, 
+    @Lessons = @Lessons;

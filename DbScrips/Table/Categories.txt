@@ -1,0 +1,5 @@
+CREATE TABLE Categories (
+    CategoryID INT IDENTITY PRIMARY KEY,
+    Name NVARCHAR(100) UNIQUE NOT NULL,
+    Description NVARCHAR(255)
+);

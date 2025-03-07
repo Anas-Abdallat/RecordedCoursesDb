@@ -1,0 +1,17 @@
+CREATE VIEW LearnerProgressView AS
+SELECT 
+    e.UserID,
+    u.Email AS LearnerEmail,
+    e.CourseID,
+    c.Title AS CourseTitle,
+    c.CategoryID,
+    cat.Name AS CategoryName,
+    e.Progress AS CompletionPercentage
+FROM Enrollments e
+JOIN Users u ON e.UserID = u.UserID
+JOIN Courses c ON e.CourseID = c.CourseID
+JOIN Categories cat ON c.CategoryID = cat.CategoryID;
+ 
+To Show result Or Test :
+
+SELECT * FROM LearnerProgressView;

@@ -1,0 +1,10 @@
+SELECT 
+    c.CourseID,
+    c.Title,
+    c.Price,
+    COALESCE(AVG(r.Rating), 0) AS AverageRating
+FROM Courses c
+JOIN Categories cat ON c.CategoryID = cat.CategoryID
+LEFT JOIN Reviews r ON c.CourseID = r.CourseID
+WHERE cat.Name = 'Programming'
+GROUP BY c.CourseID, c.Title, c.Price;

@@ -1,0 +1,38 @@
+CREATE PROCEDURE GenerateRevenueReport
+    @StartDate DATETIME,
+    @EndDate DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @StartDate > @EndDate
+    BEGIN
+        PRINT 'Error: Start date cannot be later than end date.';
+        RETURN;
+    END
+
+
+    SELECT
+        c.CourseID,
+        c.Title AS CourseTitle,
+        u.UserID AS InstructorID,
+        u.Email AS InstructorEmail,
+        COUNT(e.EnrollmentID) AS TotalEnrollments,
+        SUM(CASE 
+                WHEN c.Discount IS NULL THEN c.Price
+                ELSE (c.Price - c.Discount)
+            END) AS TotalRevenue
+    FROM Courses c
+    JOIN Users u ON c.InstructorID = u.UserID
+    LEFT JOIN Enrollments e ON c.CourseID = e.CourseID
+    WHERE e.EnrollmentDate BETWEEN @StartDate AND @EndDate
+    GROUP BY c.CourseID, c.Title, u.UserID, u.Email;
+    
+    PRINT 'Revenue report generated successfully.';
+END;
+
+to Use success :
+
+EXEC GenerateRevenueReport
+    @StartDate = '2025-01-01', 
+    @EndDate = '2025-03-01';

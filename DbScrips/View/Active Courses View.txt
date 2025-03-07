@@ -1,0 +1,17 @@
+CREATE VIEW ActiveCoursesView AS
+SELECT 
+    c.CourseID,
+    c.Title AS CourseTitle,
+    cat.Name AS CategoryName,
+    u.Email AS InstructorEmail,
+    COALESCE(COUNT(e.EnrollmentID), 0) AS TotalEnrollments
+FROM Courses c
+JOIN Categories cat ON c.CategoryID = cat.CategoryID
+JOIN Users u ON c.InstructorID = u.UserID
+LEFT JOIN Enrollments e ON c.CourseID = e.CourseID
+GROUP BY c.CourseID, c.Title, cat.Name, u.Email;
+
+
+to show res :
+
+SELECT * FROM ActiveCoursesView;

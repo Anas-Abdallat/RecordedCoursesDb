@@ -1,0 +1,39 @@
+
+
+CREATE PROCEDURE EnrollLearner
+    @UserID INT,
+    @CourseID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Users WHERE UserID = @UserID)
+    BEGIN
+        PRINT 'Error: User does not exist.';
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Courses WHERE CourseID = @CourseID)
+    BEGIN
+        PRINT 'Error: Course does not exist.';
+        RETURN;
+    END
+
+
+    IF EXISTS (SELECT 1 FROM Enrollments WHERE UserID = @UserID AND CourseID = @CourseID)
+    BEGIN
+        PRINT 'Error: Learner is already enrolled in this course.';
+        RETURN;
+    END
+
+
+    INSERT INTO Enrollments (UserID, CourseID, EnrollmentDate, Progress)
+    VALUES (@UserID, @CourseID, GETDATE(), 0);
+
+    PRINT 'Success: Learner enrolled successfully.';
+END;
+
+
+To Use stored:
+
+EXEC EnrollLearner @UserID = 101, @CourseID = 5;

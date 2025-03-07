@@ -1,0 +1,55 @@
+INSERT INTO Users (Email, [Password], ProfileImage, Bio, Role) 
+VALUES 
+('admin@gmail.com', 'asasas12', NULL, 'Admin user', 'Admin'),
+('instructor1@yahoo.com', 'inst22', NULL, 'Expert in Python', 'Instructor'),
+('learner1@app.com', 'app22', NULL, 'Learning SQL', 'Learner'),
+('jasser2@jasser.com', 'jasser', NULL, 'Web Development Instructor', 'Instructor'),
+('anas2@anas.com', 'anas12', NULL, 'Interested in AI', 'Learner');
+
+
+INSERT INTO Categories (Name, Description) 
+VALUES 
+('Programming', 'Courses related to programming languages'),
+('Data Science', 'Courses on data analysis and machine learning'),
+('Web Development', 'Courses for frontend and backend development');
+
+
+INSERT INTO Courses (Title, Description, CategoryID, InstructorID, Level, Price, Discount, TotalDuration) 
+VALUES 
+('Introduction to Python', 'Learn Python from scratch', 1, 2, 'Beginner', 49.99, 10.00, 120),
+('Machine Learning Basics', 'Fundamentals of ML with hands-on projects', 2, 2, 'Intermediate', 99.99, 15.00, 180),
+('Full-Stack Web Development', 'Build web apps using modern frameworks', 3, 4, 'Advanced', 129.99, NULL, 200);
+
+INSERT INTO Lessons (CourseID, Title, VideoURL, Duration) 
+VALUES 
+(1, 'Python Basics', 'https://example.com/python_basics.mp4', 30),
+(1, 'Control Structures', 'https://example.com/python_control.mp4', 40),
+(2, 'Introduction to ML', 'https://example.com/ml_intro.mp4', 45),
+(3, 'Frontend Development', 'https://example.com/frontend.mp4', 50),
+(3, 'Backend Development', 'https://example.com/backend.mp4', 60);
+
+INSERT INTO Enrollments (UserID, CourseID, Progress) 
+VALUES 
+(3, 1, 20),
+(5, 2, 50),
+(3, 3, 10),
+(5, 1, 30);
+
+
+INSERT INTO Reviews (UserID, CourseID, Rating, Comment) 
+VALUES 
+(3, 1, 5, 'Great course for beginners!'),
+(5, 2, 4, 'Very informative, but needs more examples.'),
+(3, 3, 3, 'Good content, but explanations could be clearer.');
+
+INSERT INTO Bookmarks (UserID, CourseID) 
+VALUES 
+(3, 1),
+(3, 2),
+(5, 3);
+
+
+INSERT INTO Reports (ReportType, DataJSON) 
+VALUES 
+('Monthly Enrollment', '{"total_enrollments": 100, "top_course": "Introduction to Python"}'),
+('Revenue Report', '{"total_revenue": 5000.75, "best_selling_course": "Machine Learning Basics"}');

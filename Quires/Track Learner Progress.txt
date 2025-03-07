@@ -1,0 +1,16 @@
+DECLARE @UserID INT = 3;
+DECLARE @CourseID INT = 1;
+
+SELECT 
+    e.UserID,
+    e.CourseID,
+    c.Title AS CourseTitle,
+    e.Progress AS CompletionPercentage,
+    COUNT(l.LessonID) AS TotalLessons,
+    ROUND((e.Progress / 100.0) * COUNT(l.LessonID), 0) AS CompletedLessons,
+    COUNT(l.LessonID) - ROUND((e.Progress / 100.0) * COUNT(l.LessonID), 0) AS RemainingLessons
+FROM Enrollments e
+JOIN Courses c ON e.CourseID = c.CourseID
+LEFT JOIN Lessons l ON e.CourseID = l.CourseID
+WHERE e.UserID = @UserID AND e.CourseID = @CourseID
+GROUP BY e.UserID, e.CourseID, c.Title, e.Progress;

@@ -1,0 +1,10 @@
+DECLARE @Keyword NVARCHAR(255) = 'Python';
+
+SELECT 
+    CourseID,
+    Title,
+    Description,
+    Price
+FROM Courses
+WHERE Title LIKE '%' + @Keyword + '%'
+   OR Description LIKE '%' + @Keyword + '%';

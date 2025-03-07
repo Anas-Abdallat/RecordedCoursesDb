@@ -1,0 +1,17 @@
+CREATE VIEW RevenueSummaryView AS
+SELECT 
+    c.CourseID,
+    c.Title AS CourseTitle,
+    u.UserID AS InstructorID,
+    u.Email AS InstructorEmail,
+    COUNT(e.EnrollmentID) AS TotalEnrollments,
+    SUM(c.Price - COALESCE(c.Discount, 0)) AS TotalRevenue
+FROM Courses c
+JOIN Users u ON c.InstructorID = u.UserID
+LEFT JOIN Enrollments e ON c.CourseID = e.CourseID
+GROUP BY c.CourseID, c.Title, u.UserID, u.Email;
+
+
+To Show :
+
+SELECT * FROM RevenueSummaryView;
